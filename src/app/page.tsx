@@ -62,21 +62,24 @@ export default function Home() {
             const data = await getWeather({
               location: `${latitude},${longitude}`,
             });
+            console.log("Weather data received:", data);
             setWeather(data);
+            setError("");
           } catch (err) {
-            setError("Failed to fetch weather data");
+            console.error("Weather fetch error:", err);
+            setError(`Failed to fetch weather data: ${err instanceof Error ? err.message : 'Unknown error'}`);
           } finally {
             setLoading(false);
           }
         },
         (err) => {
-          console.error(err);
-          setError("Location permission denied");
+          console.error("Geolocation error:", err);
+          setError("Location permission denied. Please search for a city manually.");
           setLoading(false);
         }
       );
     } else {
-      setError("Geolocation not supported by this browser");
+      setError("Geolocation not supported. Please search for a city.");
       setLoading(false);
     }
   }, []);
@@ -85,8 +88,14 @@ export default function Home() {
   useEffect(() => {
     if (query.length > 2) {
       const fetchSuggestions = async () => {
-        const results = await searchLocation(query);
-        setSuggestions(results);
+        try {
+          const results = await searchLocation(query);
+          console.log("Search results:", results);
+          setSuggestions(results || []);
+        } catch (err) {
+          console.error("Search error:", err);
+          setSuggestions([]);
+        }
       };
       fetchSuggestions();
     } else {
@@ -97,12 +106,14 @@ export default function Home() {
   // Fetch weather for selected location
   const handleSearch = async (loc: string): Promise<void> => {
     setLoading(true);
+    setError("");
     try {
       const data = await getWeather({ location: loc });
+      console.log("Search weather data:", data);
       setWeather(data);
-      setError("");
     } catch (err) {
-      setError("Failed to fetch weather data");
+      console.error("Search weather error:", err);
+      setError(`Failed to fetch weather data: ${err instanceof Error ? err.message : 'Unknown error'}`);
     } finally {
       setLoading(false);
       setSuggestions([]);
