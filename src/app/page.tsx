@@ -52,37 +52,38 @@ export default function Home() {
   }, []);
 
   // Detect current location on load
-  useEffect(() => {
-    if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          const { latitude, longitude } = position.coords;
-
-          try {
-            const data = await getWeather({
-              location: `${latitude},${longitude}`,
-            });
-            console.log("Weather data received:", data);
-            setWeather(data);
-            setError("");
-          } catch (err) {
-            console.error("Weather fetch error:", err);
-            setError(`Failed to fetch weather data: ${err instanceof Error ? err.message : 'Unknown error'}`);
-          } finally {
-            setLoading(false);
-          }
-        },
-        (err) => {
-          console.error("Geolocation error:", err);
-          setError("Location permission denied. Please search for a city manually.");
-          setLoading(false);
-        }
-      );
-    } else {
-      setError("Geolocation not supported. Please search for a city.");
+ useEffect(() => {
+  const fetchWeather = async (loc: string) => {
+    setLoading(true);
+    try {
+      const data = await getWeather({ location: loc });
+      setWeather(data);
+      setError("");
+    } catch (err) {
+      console.error("Weather fetch error:", err);
+      setError(`Failed to fetch weather data for ${loc}`);
+    } finally {
       setLoading(false);
     }
-  }, []);
+  };
+
+  if ("geolocation" in navigator) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        fetchWeather(`${latitude},${longitude}`);
+      },
+      (err) => {
+        console.warn("Geolocation denied, showing Dhaka by default:", err);
+        fetchWeather("Dhaka, Bangladesh"); // fallback
+      }
+    );
+  } else {
+    console.warn("Geolocation not supported, showing Dhaka by default");
+    fetchWeather("Dhaka, Bangladesh"); // fallback
+  }
+}, []);
+
 
   // Search location suggestions
   useEffect(() => {
