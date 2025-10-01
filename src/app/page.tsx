@@ -3,67 +3,47 @@
 import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 import { getWeather, searchLocation } from "@/services/getWeather";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+
+interface WeatherData {
+  location: {
+    name: string;
+    region: string;
+    country: string;
+  };
+  current: {
+    temp_c: number;
+    feelslike_c: number;
+    condition: {
+      text: string;
+      icon: string;
+    };
+    wind_kph: number;
+    humidity: number;
+    vis_km: number;
+    pressure_mb: number;
+  };
+}
+
+interface LocationSuggestion {
+  id?: string;
+  name: string;
+  country: string;
+}
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import {
-  Search,
-  MapPin,
-  Wind,
-  Droplets,
-  Eye,
-  Gauge,
-  Moon,
-  Sun,
-} from "lucide-react";
-import Image from "next/image";
-
-interface WeatherLocation {
-  name: string;
-  region?: string;
-  country: string;
-}
-
-interface WeatherCurrent {
-  temp_c: number;
-  feelslike_c: number;
-  condition: {
-    text: string;
-    icon: string;
-  };
-  wind_kph: number;
-  humidity: number;
-  vis_km: number;
-  pressure_mb: number;
-}
-
-interface WeatherData {
-  location: WeatherLocation;
-  current: WeatherCurrent;
-}
-
-interface Suggestion {
-  id?: string | number;
-  name: string;
-  country: string;
-}
+import { Search, MapPin, Wind, Droplets, Eye, Gauge, Moon, Sun } from "lucide-react";
 
 export default function Home() {
   const [weather, setWeather] = useState<WeatherData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
   const [query, setQuery] = useState<string>("");
-  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
-  const [mounted, setMounted] = useState(false);
+  const [suggestions, setSuggestions] = useState<LocationSuggestion[]>([]);
+  const [mounted, setMounted] = useState<boolean>(false);
   const { theme, setTheme } = useTheme();
 
   // Prevent hydration mismatch
@@ -77,14 +57,14 @@ export default function Home() {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           const { latitude, longitude } = position.coords;
+
           try {
             const data = await getWeather({
               location: `${latitude},${longitude}`,
             });
-            if (data) setWeather(data);
+            setWeather(data);
           } catch (err) {
             setError("Failed to fetch weather data");
-            console.error(err);
           } finally {
             setLoading(false);
           }
@@ -105,12 +85,8 @@ export default function Home() {
   useEffect(() => {
     if (query.length > 2) {
       const fetchSuggestions = async () => {
-        try {
-          const results = await searchLocation(query);
-          setSuggestions(results || []);
-        } catch (err) {
-          console.error(err);
-        }
+        const results = await searchLocation(query);
+        setSuggestions(results);
       };
       fetchSuggestions();
     } else {
@@ -119,17 +95,14 @@ export default function Home() {
   }, [query]);
 
   // Fetch weather for selected location
-  const handleSearch = async (loc: string) => {
+  const handleSearch = async (loc: string): Promise<void> => {
     setLoading(true);
     try {
       const data = await getWeather({ location: loc });
-      if (data) {
-        setWeather(data);
-        setError("");
-      }
+      setWeather(data);
+      setError("");
     } catch (err) {
       setError("Failed to fetch weather data");
-      console.error(err);
     } finally {
       setLoading(false);
       setSuggestions([]);
@@ -137,7 +110,9 @@ export default function Home() {
     }
   };
 
-  if (!mounted) return null;
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-blue-50 via-white to-blue-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 transition-colors p-4 md:p-8">
@@ -152,7 +127,7 @@ export default function Home() {
               Real-time weather information for any location
             </p>
           </div>
-
+          
           {/* Theme Toggle Button */}
           <Button
             variant="outline"
@@ -178,7 +153,7 @@ export default function Home() {
               className="pl-10 h-12 text-base shadow-lg"
             />
           </div>
-
+          
           {suggestions.length > 0 && (
             <Card className="absolute z-10 w-full mt-2 shadow-xl">
               <CardContent className="p-0">
@@ -232,6 +207,7 @@ export default function Home() {
         {/* Weather Info */}
         {!loading && weather && (
           <div className="space-y-6">
+            {/* Main Weather Card */}
             <Card className="max-w-2xl mx-auto shadow-xl">
               <CardHeader className="text-center pb-4">
                 <CardTitle className="text-3xl flex items-center justify-center gap-2">
@@ -245,9 +221,7 @@ export default function Home() {
               </CardHeader>
               <CardContent>
                 <div className="flex flex-col items-center">
-                  <Image
-                    height={500}
-                    width={500}
+                  <img
                     src={weather.current.condition.icon}
                     alt={weather.current.condition.text}
                     className="w-32 h-32"
