@@ -1,11 +1,11 @@
 import axios from "axios";
 
-const API_KEY = process.env.NEXT_PUBLIC_WEATHER_API_KEY || "5149236ba6114eff9c9145201250110";
+const API_KEY = process.env.NEXT_PUBLIC_WEATHER_API_KEY;
 
-export async function getWeather({ location = 'Bangladesh' }) {
+export async function getWeather({ location = 'Bangladesh', lang = 'en' }) {
   try {
     const res = await axios.get(
-      `https://api.weatherapi.com/v1/current.json?key=${API_KEY}&q=${location}&aqi=no`
+      `https://api.weatherapi.com/v1/forecast.json?key=${API_KEY}&q=${location}&days=7&aqi=yes&alerts=no&lang=${lang}`
     );
     return res.data;
   } catch (error) {
