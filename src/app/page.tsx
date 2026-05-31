@@ -7,12 +7,12 @@ import { getWeather, searchLocation } from "@/services/getWeather";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
+
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Search, MapPin, Wind, Droplets, Moon, Sun, Star, Sunrise, Sunset, Leaf } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { GlobalLoader } from "@/components/GlobalLoader";
+import GlobalLoading from "@/app/loading";
 
 // --- Types ---
 interface WeatherData {
@@ -304,7 +304,7 @@ export default function Home() {
           </div>
 
           {/* Loading State Overlay */}
-          {loading && <GlobalLoader />}
+          {loading && <GlobalLoading />}
 
           {/* Error State */}
           {!loading && error && (
