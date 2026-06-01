@@ -1,36 +1,84 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🌤️ Weather Now
 
-## Getting Started
+A beautifully designed, mobile-first Progressive Web Application (PWA) that provides real-time weather updates, forecasts, and environmental metrics. Built with modern web technologies, it features a stunning glassmorphism UI and bilingual support (English & Bengali).
 
-First, run the development server:
+## ✨ Features
+
+- **🌍 Real-time Weather:** Accurate current weather conditions, temperature, and "feels like" metrics.
+- **📅 Extended Forecasts:** 7-day daily forecasts and detailed hourly predictions.
+- **🍃 Advanced Metrics:** UV Index, Air Quality Index (AQI), Wind Speed, and Humidity.
+- **🌗 Dark & Light Mode:** Seamless theme switching with a gorgeous glassmorphism UI that adapts to the current weather condition and time of day.
+- **🌐 Bilingual Support:** Fully localized in English (EN) and Bengali (BN).
+- **📍 Location Search & Geolocation:** Auto-detects your location or allows searching for cities worldwide with auto-complete suggestions.
+- **⭐ Favorites:** Save your most visited locations for quick access.
+- **📱 PWA Ready:** Installable on mobile and desktop devices with offline fallback support via service workers.
+- **⚡ Fast & Responsive:** Mobile-first design that looks great on all screen sizes, powered by Next.js 16 and Turbopack.
+
+## 🛠️ Tech Stack
+
+- **Framework:** [Next.js 16](https://nextjs.org/) (App Router, Turbopack)
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS (v4) with custom Glassmorphic styling
+- **UI Components:** [shadcn/ui](https://ui.shadcn.com/) & [Lucide React](https://lucide.dev/)
+- **State & Theme:** React Hooks, `next-themes`
+- **PWA Integration:** `@serwist/next`
+- **Weather Data API:** [WeatherAPI](https://www.weatherapi.com/)
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+Ensure you have Node.js (v18 or later) installed on your system.
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/muhammadsaif7717/weather-now.git
+cd weather-now
+```
+
+### 2. Install dependencies
+
+```bash
+npm install
+```
+
+### 3. Setup Environment Variables
+
+Create a `.env` file in the root directory and add your WeatherAPI key:
+
+```env
+NEXT_PUBLIC_WEATHER_API_KEY=your_api_key_here
+```
+
+### 4. Run the development server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the app in action.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📦 Building for Production
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+To create an optimized production build:
 
-## Learn More
+```bash
+npm run build
+npm start
+```
 
-To learn more about Next.js, take a look at the following resources:
+## 📱 Progressive Web App (PWA)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Weather Now is configured as a PWA using Serwist. In production, it registers a service worker that caches critical assets, providing a faster load time and a robust experience even on unstable networks. 
+*Note: The service worker is intentionally disabled in development mode to support Turbopack hot-reloading.*
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🎨 UI/UX Highlights
 
-## Deploy on Vercel
+- **Dynamic Backgrounds:** The app background intelligently changes based on the time of day (day/night) and current weather conditions (sunny, rainy, cloudy).
+- **Glassmorphism:** Cards and UI elements utilize `backdrop-blur` to create a premium, frosted-glass effect that lets the dynamic background shine through.
+- **Micro-interactions:** Smooth transitions, hover effects, and global loading states ensure a polished and engaging user experience.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🤝 Contributing
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Contributions are welcome! If you have suggestions or want to add features, feel free to open an issue or submit a pull request.
